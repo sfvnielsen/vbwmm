@@ -5,6 +5,7 @@ function [expectations, other,priors] = vbwmm( C, nu , K, varargin)
 %       C    - array of size p x p x L
 %       nu   - array of size 1 x L (degrees of freedom for each window)
 %       K    - number of clusters
+%
 % OPTIONAL INPUTS:
 %       maxiter - number of iterations (default: 100)
 %       rel_tol - relative tolerance in lower bound (stopping criteria)
@@ -13,11 +14,39 @@ function [expectations, other,priors] = vbwmm( C, nu , K, varargin)
 %                    stopping
 %       verbose - on/off (off still yields a few lines of text)
 %       init_method - method of initialization
-%                       'random'
-
-
-
-
+%                       'kmeans' (default) - clustering is initialized to
+%                       the kmeans solution
+%                       'random' - clustering is initialized randomly (i.e.
+%                       each window is assigned to one of the K clusters)
+%                       'uniform' - expectation of z (clustering) is
+%                       initialized to 1/K. 
+%       init_z - initialize z to a specific clustering of your choice
+%           (default is empty which results in standard initializtion as
+%           specified by "init_method")
+%
+%       runGPU - bool that determines if GPU should be used 
+%                (default is false - NOT THOROUGHLY TESTED)
+%       delay_hyper - number of iterations that should run before updating
+%                   hyperparameters (in this case only eta)
+%       update_z - how should z (clustering) be updated
+%                       'expect' (default) - expectation step
+%                       'max' - maximization step
+%                       'stochastic_search' - sampling according to current
+%                       "posterior" (mimicking Gibbs sampling) (NOT TESTED
+%                       THOROUGHLY)
+%       
+%       If you use this code for academic purposes please cite my paper
+%
+%       Nielsen, S. F. V., Madsen, K. H., Schmidt, M. N., & Mørup, M. (2017) 
+%       "Modeling Dynamic Functional Connectivity 
+%       using a Wishart Mixture Model" 
+%       In 2017 International Workshop on 
+%       Pattern Recognition in NeuroImaging (PRNI), IEEE.
+%       
+%
+%   Written by: Søren Føns Vind Nielsen (sfvn at dtu dot dk)
+%   June, 2017
+%   See LICENSE file in repository (MIT License)
 
 %% Initialization
 % Global variables
@@ -232,7 +261,7 @@ while (it<maxiter && rel_lb_diff>rel_tol) || it < force_iter
 end
 
 other.lower_bound(isnan(other.lower_bound)) = [];
-% Return extra nice stuff
+% TODO: Return extra nice stuff
 % Expectations of covariance (i.e. inverse of what we have been doing)
 % Print final message (time,...)
 

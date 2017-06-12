@@ -11,6 +11,13 @@ Kpos = 1:10; % possbile number of clusters
 RESTARTS = 5; 
 
 p = 25; % dimensionality of problem
+% NB! When dimensionality is high (compared to the number of data-points)
+% the prior on eta becomes increasingly important (as problem becomes
+% unstable). Consider fixing eta in that case. 
+% Set 'fix_eta' to true and set inital values for 'eta_inv' to "something".
+% We suggest trying a range of values and use the value with highest
+% predictive likelihood on held-out data.
+
 T_SCALE = 1000; % number of time points
 N= T_SCALE*[0.4 0.3 0.2 0.1]; % configuration of clustering
 ZS = [1,2,3,1]; 
